@@ -1,10 +1,16 @@
-name: CI/CD Pipeline
+name: Multi-Env CI/CD Pipeline
 
 on:
   push:
-    branches: [main]
+    branches:
+      - main
+      - staging
+      - test
   pull_request:
-    branches: [main]
+    branches:
+      - main
+      - staging
+      - test
 
 jobs:
   build-and-test:
@@ -15,10 +21,19 @@ jobs:
         uses: actions/checkout@v3
 
       - name: Simulate Build Step
-        run: echo "✅ Build step complete"
+        run: echo "🔧 Build complete for ${{ github.ref_name }} branch"
 
       - name: Simulate Test Step
-        run: echo "🧪 Tests passed"
+        run: echo "🧪 Tests passed for ${{ github.ref_name }} branch"
 
-      - name: Simulate Deployment
-        run: echo "🚀 Deployed to production"
+      - name: Deploy to Environment
+        run: |
+          if [[ "${{ github.ref_name }}" == "test" ]]; then
+            echo "🚧 Deploying to Test Environment..."
+          elif [[ "${{ github.ref_name }}" == "staging" ]]; then
+            echo "🚀 Deploying to Staging Environment..."
+          elif [[ "${{ github.ref_name }}" == "main" ]]; then
+            echo "🎯 Deploying to Production!"
+          else
+            echo "⚠️ Unknown branch — skipping deploy."
+          fi
