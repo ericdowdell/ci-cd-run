@@ -1,0 +1,19 @@
+name: CI Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run tests
+      run: echo "Running tests..."
+    - name: Deploy to Staging
+      run: |
+        echo "Deploying to ${{ secrets.STAGING_DEPLOY_URL }}"
